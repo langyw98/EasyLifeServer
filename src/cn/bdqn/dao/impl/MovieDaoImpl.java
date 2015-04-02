@@ -18,12 +18,24 @@ public class MovieDaoImpl implements MovieDao {
 	ResultSet rs = null;
 	
 	@Override
-	public List<Movie> getMovie() {
+	public List<Movie> getMovie(int startPos) {
 		try{
+			List<Movie> movies = new ArrayList<Movie>();
 			conn = DBUtil.getConnection();
 			st = conn.createStatement();
-			rs = st.executeQuery("select movieid,name,type,time,player,image from movie");
-			List<Movie> movies = new ArrayList<Movie>();
+			String selection = "";
+			if(startPos > 0){
+				selection = "where movieid > " +startPos;
+				rs = st.executeQuery("SELECT MAX(movieid) FROM movie");
+				rs.next();
+				int endPos = rs.getInt(1);
+				if(endPos <= startPos){
+					return movies;
+				}else{
+					rs.close();
+				}
+			}
+			rs = st.executeQuery("select movieid,name,type,time,player,image,descr,timelong from movie" + selection);
 			while(rs.next()){
 				Movie movie = new Movie();
 				movie.setMovieid(rs.getInt(1));
@@ -32,6 +44,8 @@ public class MovieDaoImpl implements MovieDao {
 				movie.setTime(rs.getString(4));
 				movie.setPlayer(rs.getString(5));
 				movie.setImagename(rs.getString(6));
+				movie.setDesc(rs.getString(7));
+				movie.setTimelong(rs.getString(8));
 				
 				movies.add(movie);
 			}

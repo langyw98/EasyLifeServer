@@ -46,8 +46,8 @@ public class DealCMD extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		request.setCharacterEncoding("gbk");
-		response.setCharacterEncoding("gbk");
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
 		
 		String cmdStr = request.getParameter("cmd");
 		int cmd = Integer.parseInt(cmdStr);
@@ -137,18 +137,21 @@ public class DealCMD extends HttpServlet {
 			}
 			break;
 		case 101://获取电影列表
+			int startPos = Integer.parseInt(request.getParameter("startPos"));
 			MovieDaoImpl movieImpl = new MovieDaoImpl();
-			List<Movie> movies = movieImpl.getMovie();
+			List<Movie> movies = movieImpl.getMovie(startPos);
 			if(movies != null && movies.size() > 0){
 				StringBuffer sb = new StringBuffer(",'list':[");
 				for(int i=0;i<movies.size();i++){
 					Movie movie = movies.get(i);
 					
-					sb.append("{'mid':'"+movie.getMovieid()+"','name':'"+movie.getName()+"','type':'"+movie.getType()+"','time':'"+movie.getTime()+"','player':'"+movie.getPlayer()+"','image':'"+movie.getImagename()+"'},");
+					sb.append("{'mid':'"+movie.getMovieid()+"','name':'"+movie.getName()+"','type':'"+movie.getType()+"','time':'"+movie.getTime()+"','player':'"+movie.getPlayer()+"','image':'"+movie.getImagename()+"','desc':'"+movie.getDesc()+"','tlong':'"+movie.getTimelong()+"'},");
 				}
 				sb.delete(sb.length()-1, sb.length());
 				sb.append("]");
 				result = "{'cmd':'"+101+"','code':'"+0+"'"+sb.toString()+"}";
+			}else if(movies.size() == 0){
+				result = "{'cmd':'"+801+"','code':'"+2+"'}";
 			}else{
 				result = "{'cmd':'"+101+"','code':'"+1+"'}";
 			}
@@ -334,7 +337,7 @@ public class DealCMD extends HttpServlet {
 			break;
 		case 801://获取即将上映电影列表
 			MovieWillDaoImpl moviewImpl = new MovieWillDaoImpl();
-			List<Movie> movs = moviewImpl.getMovie();
+			List<Movie> movs = moviewImpl.getMovie(Integer.parseInt(request.getParameter("startPos")));
 			if(movs != null && movs.size() > 0){
 				StringBuffer sb = new StringBuffer(",'list':[");
 				for(int i=0;i<movs.size();i++){
@@ -345,6 +348,8 @@ public class DealCMD extends HttpServlet {
 				sb.delete(sb.length()-1, sb.length());
 				sb.append("]");
 				result = "{'cmd':'"+801+"','code':'"+0+"'"+sb.toString()+"}";
+			}else if(movs.size() == 0){
+				result = "{'cmd':'"+801+"','code':'"+2+"'}";
 			}else{
 				result = "{'cmd':'"+801+"','code':'"+1+"'}";
 			}

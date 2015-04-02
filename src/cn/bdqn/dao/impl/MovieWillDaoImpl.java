@@ -18,7 +18,7 @@ public class MovieWillDaoImpl implements MovieDao {
 	ResultSet rs = null;
 	
 	@Override
-	public List<Movie> getMovie() {
+	public List<Movie> getMovie(int startPos) {
 		try{
 			conn = DBUtil.getConnection();
 			st = conn.createStatement();
