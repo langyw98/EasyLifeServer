@@ -150,7 +150,7 @@ public class DealCMD extends HttpServlet {
 				sb.delete(sb.length()-1, sb.length());
 				sb.append("]");
 				result = "{'cmd':'"+101+"','code':'"+0+"'"+sb.toString()+"}";
-			}else if(movies.size() == 0){
+			}else if(movies != null && movies.size() == 0){
 				result = "{'cmd':'"+801+"','code':'"+2+"'}";
 			}else{
 				result = "{'cmd':'"+101+"','code':'"+1+"'}";
@@ -343,12 +343,12 @@ public class DealCMD extends HttpServlet {
 				for(int i=0;i<movs.size();i++){
 					Movie mov = movs.get(i);
 					
-					sb.append("{'mid':'"+mov.getMovieid()+"','name':'"+mov.getName()+"','type':'"+mov.getType()+"','time':'"+mov.getTime()+"','player':'"+mov.getPlayer()+"','image':'"+mov.getImagename()+"'},");
+					sb.append("{'mid':'"+mov.getMovieid()+"','name':'"+mov.getName()+"','type':'"+mov.getType()+"','time':'"+mov.getTime()+"','player':'"+mov.getPlayer()+"','image':'"+mov.getImagename()+"','desc':'"+mov.getDesc()+"','tlong':'"+mov.getTimelong()+"'},");
 				}
 				sb.delete(sb.length()-1, sb.length());
 				sb.append("]");
 				result = "{'cmd':'"+801+"','code':'"+0+"'"+sb.toString()+"}";
-			}else if(movs.size() == 0){
+			}else if(movs != null && movs.size() == 0){
 				result = "{'cmd':'"+801+"','code':'"+2+"'}";
 			}else{
 				result = "{'cmd':'"+801+"','code':'"+1+"'}";

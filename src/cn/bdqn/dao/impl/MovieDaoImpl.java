@@ -19,8 +19,8 @@ public class MovieDaoImpl implements MovieDao {
 	
 	@Override
 	public List<Movie> getMovie(int startPos) {
+		List<Movie> movies = new ArrayList<Movie>();
 		try{
-			List<Movie> movies = new ArrayList<Movie>();
 			conn = DBUtil.getConnection();
 			st = conn.createStatement();
 			String selection = "";
@@ -55,7 +55,7 @@ public class MovieDaoImpl implements MovieDao {
 		}finally{
 			DBUtil.freeDB(rs, st, conn);
 		}
-		return null;
+		return movies;
 	}
 
 	@Override
