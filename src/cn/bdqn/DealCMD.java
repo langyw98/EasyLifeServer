@@ -104,6 +104,8 @@ public class DealCMD extends HttpServlet {
 				sb.delete(sb.length()-1, sb.length());
 				sb.append("]");
 				result = "{'cmd':'"+2+"','code':'"+0+"'"+sb.toString()+"}";
+			}else if(recs != null && recs.size() == 0){
+				result = "{'cmd':'"+2+"','code':'"+2+"'}";
 			}else{
 				result = "{'cmd':'"+2+"','code':'"+1+"'}";
 			}
