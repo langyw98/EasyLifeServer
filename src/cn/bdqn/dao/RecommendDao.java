@@ -7,7 +7,7 @@ import cn.bdqn.domain.Recommend;
 public interface RecommendDao {
 
 	/**获取所有评论*/
-	public List<Recommend> getRecommends(int type,int tid);
+	public List<Recommend> getRecommends(int type,int tid, int startPos, int pageLength);
 	/**插入评论*/
 	public boolean insertRec(Recommend rec);
 }

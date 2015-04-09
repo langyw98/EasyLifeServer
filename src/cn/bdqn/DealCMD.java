@@ -88,23 +88,25 @@ public class DealCMD extends HttpServlet {
 			}
 			break;
 		case 2://获取评论
-				String type = request.getParameter("type");
-				String tid = request.getParameter("tid");
-				RecommendDaoImpl recImpl = new RecommendDaoImpl();
-				List<Recommend> recs = recImpl.getRecommends(Integer.parseInt(type),Integer.parseInt(tid));
-				if(recs !=null && recs.size()>0){
-					StringBuffer sb = new StringBuffer(",'list':[");
-					for(int i=0;i<recs.size();i++){
-						Recommend rec = recs.get(i);
-						sb.append("{'name':'"+rec.getUsername()+"','time':'"+rec.getTime()+
-								"','content':'"+rec.getContent()+"','type':'"+rec.getType()+"','tid':'"+rec.getTid()+"'},");
-					}
-					sb.delete(sb.length()-1, sb.length());
-					sb.append("]");
-					result = "{'cmd':'"+2+"','code':'"+0+"'"+sb.toString()+"}";
-				}else{
-					result = "{'cmd':'"+2+"','code':'"+1+"'}";
+			String type = request.getParameter("type");
+			String tid = request.getParameter("tid");
+			String start = request.getParameter("startPos");
+			String pageLength = request.getParameter("pageLength");
+			RecommendDaoImpl recImpl = new RecommendDaoImpl();
+			List<Recommend> recs = recImpl.getRecommends(Integer.parseInt(type),Integer.parseInt(tid), Integer.parseInt(start) ,Integer.parseInt(pageLength));
+			if(recs !=null && recs.size()>0){
+				StringBuffer sb = new StringBuffer(",'list':[");
+				for(int i=0;i<recs.size();i++){
+					Recommend rec = recs.get(i);
+					sb.append("{'name':'"+rec.getUsername()+"','time':'"+rec.getTime()+"','recid':'"+rec.getRecid()+
+							"','content':'"+rec.getContent()+"','type':'"+rec.getType()+"','tid':'"+rec.getTid()+"'},");
 				}
+				sb.delete(sb.length()-1, sb.length());
+				sb.append("]");
+				result = "{'cmd':'"+2+"','code':'"+0+"'"+sb.toString()+"}";
+			}else{
+				result = "{'cmd':'"+2+"','code':'"+1+"'}";
+			}
 			break;
 		case 3://发布评论
 			String name = request.getParameter("name");

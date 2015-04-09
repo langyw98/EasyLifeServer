@@ -18,19 +18,26 @@ public class RecommendDaoImpl implements RecommendDao {
 	ResultSet rs = null;
 	
 	@Override
-	public List<Recommend> getRecommends(int type,int tid) {
+	public List<Recommend> getRecommends(int type,int tid, int startPos, int pageLength) {
 		try{
 			conn = DBUtil.getConnection();
 			st = conn.createStatement();
-			rs = st.executeQuery("select username,time,content,type,tid from recommend where type="+type+" and tid="+tid);
+			String selection = "";
+			if(startPos != -1){
+				selection = " AND recid < " + startPos;
+			}
+//			rs = st.executeQuery("select username,time,content,type,tid from recommend where type="+type+" and tid="+tid);
+			String sql = "SELECT recid,username,time,content,type,tid FROM recommend WHERE type = "+ type + " AND tid = " + tid + selection + " ORDER BY recid DESC LIMIT " + pageLength;
+			rs = st.executeQuery("SELECT recid,username,time,content,type,tid FROM recommend WHERE type = "+ type + " AND tid = " + tid + selection + " ORDER BY recid DESC LIMIT " + pageLength);
 			List<Recommend> recs = new ArrayList<Recommend>();
 			while(rs.next()){
 				Recommend rec = new Recommend();
-				rec.setUsername(rs.getString(1));
-				rec.setTime(rs.getString(2));
-				rec.setContent(rs.getString(3));
-				rec.setType(rs.getInt(4));
-				rec.setTid(rs.getInt(5));
+				rec.setRecid(rs.getInt(1));
+				rec.setUsername(rs.getString(2));
+				rec.setTime(rs.getString(3));
+				rec.setContent(rs.getString(4));
+				rec.setType(rs.getInt(5));
+				rec.setTid(rs.getInt(6));
 				recs.add(rec);
 			}
 			return recs;
