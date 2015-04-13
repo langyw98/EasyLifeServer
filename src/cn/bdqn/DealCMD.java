@@ -63,7 +63,8 @@ public class DealCMD extends HttpServlet {
 			UserDaoImpl userDaoImpl= new UserDaoImpl();
 			flag = userDaoImpl.getUser(uid);
 			if(flag){
-				result = "{'cmd':'"+0+"','code':'"+0+"','uid':'"+uid+"','login':'"+login+"'}";
+				String nickName = userDaoImpl.getNickName(uid);
+				result = "{'cmd':'"+0+"','code':'"+0+"','uid':'"+uid+"','login':'"+login+"','nickname':'"+nickName+"'}";
 			}else{
 				result = "{'cmd':'"+0+"','code':'"+1+"',login:'"+login+"'}";
 			}
@@ -126,7 +127,9 @@ public class DealCMD extends HttpServlet {
 			rec.setType(Integer.parseInt(type2));
 			flag = recImpl2.insertRec(rec);
 			if(flag){
-				result = "{'cmd':'"+3+"','code':'"+0+"'}";
+				result = "{'cmd':'"+3+"','code':'"+ 0 +
+						"','name':'"+rec.getUsername()+"','time':'"+rec.getTime()+"','recid':'"+rec.getRecid()+
+						"','content':'"+rec.getContent()+"','type':'"+rec.getType()+"','tid':'"+rec.getTid()+"'}";
 			}else{
 				result = "{'cmd':'"+3+"','code':'"+1+"'}";
 			}

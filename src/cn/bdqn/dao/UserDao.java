@@ -10,4 +10,8 @@ public interface UserDao {
 	public boolean getUser(String uid);
 	/**检验用户名是否已存在*/
 	public boolean isExist(String strAccount);
+	
+	public String getNickName(String uid);
+	
+	public boolean updateNickName(String uid, String nickName);
 }

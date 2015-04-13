@@ -21,7 +21,7 @@ public class UserDaoImpl implements UserDao {
 		try{
 			conn = DBUtil.getConnection();
 			st = conn.createStatement();
-			int rownum = st.executeUpdate("insert into user(name,password,uid) values('"+user.getName()+"','"+user.getPassword()+"','"+user.getUid()+"')");
+			int rownum = st.executeUpdate("insert into user(name,password,uid,nickname) values('"+user.getName()+"','"+user.getPassword()+"','"+user.getUid()+"','"+user.getName()+"')");
 			if(rownum > 0){
 				return true;
 			}else{
@@ -70,6 +70,31 @@ public class UserDaoImpl implements UserDao {
 		}finally{
 			DBUtil.freeDB(rs, st, conn);
 		}
+		return false;
+	}
+
+	@Override
+	public String getNickName(String uid) {
+		// TODO Auto-generated method stub
+		String nickname = null;
+		try{
+			conn = DBUtil.getConnection();
+			st = conn.createStatement();
+			rs = st.executeQuery("select nickname from user where uid='"+uid+"'");
+			if(rs.first()){
+				nickname = rs.getString(1);
+			}
+		}catch(SQLException e){
+			
+		}finally{
+			DBUtil.freeDB(rs, st, conn);
+		}
+		return nickname;
+	}
+
+	@Override
+	public boolean updateNickName(String uid, String nickName) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
