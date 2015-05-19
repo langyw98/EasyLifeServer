@@ -1,7 +1,7 @@
 package cn.bdqn.domain;
 
 /**ÆÀÂÛ*/
-public class Recommend {
+public class Comment {
 
 	private int recid;
 	private String username;

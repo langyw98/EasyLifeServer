@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.bdqn.dao.RecommendDao;
+import cn.bdqn.dao.impl.CommentDaoImpl;
 import cn.bdqn.dao.impl.ConcertDaoImpl;
 import cn.bdqn.dao.impl.DelicaciesDaoImpl;
 import cn.bdqn.dao.impl.DisplayDaoImpl;
@@ -23,6 +25,7 @@ import cn.bdqn.dao.impl.PekingOperaDaoImpl;
 import cn.bdqn.dao.impl.PlayDaoImpl;
 import cn.bdqn.dao.impl.RecommendDaoImpl;
 import cn.bdqn.dao.impl.UserDaoImpl;
+import cn.bdqn.domain.Comment;
 import cn.bdqn.domain.Concert;
 import cn.bdqn.domain.Delicacies;
 import cn.bdqn.domain.Display;
@@ -93,12 +96,12 @@ public class DealCMD extends HttpServlet {
 			String tid = request.getParameter("tid");
 			String start = request.getParameter("startPos");
 			String pageLength = request.getParameter("pageLength");
-			RecommendDaoImpl recImpl = new RecommendDaoImpl();
-			List<Recommend> recs = recImpl.getRecommends(Integer.parseInt(type),Integer.parseInt(tid), Integer.parseInt(start) ,Integer.parseInt(pageLength));
+			CommentDaoImpl recImpl = new CommentDaoImpl();
+			List<Comment> recs = recImpl.getComments(Integer.parseInt(type),Integer.parseInt(tid), Integer.parseInt(start) ,Integer.parseInt(pageLength));
 			if(recs !=null && recs.size()>0){
 				StringBuffer sb = new StringBuffer(",'list':[");
 				for(int i=0;i<recs.size();i++){
-					Recommend rec = recs.get(i);
+					Comment rec = recs.get(i);
 					sb.append("{'name':'"+rec.getUsername()+"','time':'"+rec.getTime()+"','recid':'"+rec.getRecid()+
 							"','content':'"+rec.getContent()+"','type':'"+rec.getType()+"','tid':'"+rec.getTid()+"'},");
 				}
@@ -118,14 +121,14 @@ public class DealCMD extends HttpServlet {
 			String content = request.getParameter("content");
 			String type2 = request.getParameter("type");
 			String tid2 = request.getParameter("tid");
-			RecommendDaoImpl recImpl2 = new RecommendDaoImpl();
-			Recommend rec = new Recommend();
+			CommentDaoImpl recImpl2 = new CommentDaoImpl();
+			Comment rec = new Comment();
 			rec.setUsername(name);
 			rec.setContent(content);
 			rec.setTime(time);
 			rec.setTid(Integer.parseInt(tid2));
 			rec.setType(Integer.parseInt(type2));
-			flag = recImpl2.insertRec(rec);
+			flag = recImpl2.insertCom(rec);
 			if(flag){
 				result = "{'cmd':'"+3+"','code':'"+ 0 +
 						"','name':'"+rec.getUsername()+"','time':'"+rec.getTime()+"','recid':'"+rec.getRecid()+
@@ -371,6 +374,22 @@ public class DealCMD extends HttpServlet {
 				result = "{'cmd':'"+802+"','code':'"+1+"'}";
 			}
 			break;
+		case 901://获取推荐列表
+			RecommendDao recommendDao = new RecommendDaoImpl();
+			List<Recommend> recommends = recommendDao.getRecommendList();
+			if(recommends != null && recommends.size() > 0){
+				StringBuffer sb = new StringBuffer(",'list':[");
+				for(int i=0;i<recommends.size();i++){
+					Recommend recommend = recommends.get(i);
+					
+					sb.append("{'type':'"+recommend.getType()+"','tid':'"+recommend.getTid());
+				}
+				sb.delete(sb.length()-1, sb.length());
+				sb.append("]");
+				result = "{'cmd':'"+901+"','code':'"+0+"'"+sb.toString()+"}";
+			}else{
+				result = "{'cmd':'"+901+"','code':'"+1+"'}";
+			}
 		}
 		System.out.println(result);
 		if(result != null){

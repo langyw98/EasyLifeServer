@@ -205,9 +205,9 @@ insert  into `play`(`play_id`,`name`,`time`,`image`,`calls`,`mapx`,`mapy`,`price
 
 /*Table structure for table `recommend` */
 
-DROP TABLE IF EXISTS `recommend`;
+DROP TABLE IF EXISTS `comment`;
 
-CREATE TABLE `recommend` (
+CREATE TABLE `comment` (
   `recid` int(10) NOT NULL AUTO_INCREMENT,
   `username` varchar(25) NOT NULL,
   `time` varchar(25) NOT NULL,
