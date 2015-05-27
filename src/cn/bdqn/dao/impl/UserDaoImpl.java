@@ -54,6 +54,23 @@ public class UserDaoImpl implements UserDao {
 		return false;
 	}
 
+	public String getUser(String name, String password){
+		try{
+			conn = DBUtil.getConnection();
+			st = conn.createStatement();
+			rs = st.executeQuery("select uid from user where name='"+name+"'AND password='"+password+"'");
+			if(rs.first()){
+				return rs.getString(1);
+			}else{
+				return null;
+			}
+		}catch(SQLException e){
+			
+		}finally{
+			DBUtil.freeDB(rs, st, conn);
+		}
+		return null;
+	}
 	@Override
 	public boolean isExist(String strAccount) {
 		try{

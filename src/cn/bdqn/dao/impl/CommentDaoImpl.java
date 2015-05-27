@@ -54,7 +54,6 @@ public class CommentDaoImpl implements CommentDao {
 		try{
 		conn = DBUtil.getConnection();
 		st = conn.createStatement();
-		String sql = "insert into comment(username,time,content,type,tid) values('"+rec.getUsername()+"','"+rec.getTime()+"','"+rec.getContent()+"','"+rec.getType()+"','"+rec.getTid()+"')";
 		int rownum = st.executeUpdate("insert into comment(username,time,content,type,tid) values('"+rec.getUsername()+"','"+rec.getTime()+"','"+rec.getContent()+"','"+rec.getType()+"','"+rec.getTid()+"')");
 		if(rownum > 0){
 			return true;

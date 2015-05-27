@@ -12,11 +12,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.bdqn.dao.FavorDao;
 import cn.bdqn.dao.RecommendDao;
 import cn.bdqn.dao.impl.CommentDaoImpl;
 import cn.bdqn.dao.impl.ConcertDaoImpl;
 import cn.bdqn.dao.impl.DelicaciesDaoImpl;
 import cn.bdqn.dao.impl.DisplayDaoImpl;
+import cn.bdqn.dao.impl.FavorDaoImpl;
 import cn.bdqn.dao.impl.HotelDetailDaoImpl;
 import cn.bdqn.dao.impl.MovieDaoImpl;
 import cn.bdqn.dao.impl.MovieWillDaoImpl;
@@ -29,6 +31,7 @@ import cn.bdqn.domain.Comment;
 import cn.bdqn.domain.Concert;
 import cn.bdqn.domain.Delicacies;
 import cn.bdqn.domain.Display;
+import cn.bdqn.domain.Favor;
 import cn.bdqn.domain.HotelDetail;
 import cn.bdqn.domain.Movie;
 import cn.bdqn.domain.Music;
@@ -65,6 +68,14 @@ public class DealCMD extends HttpServlet {
 			String login = request.getParameter("login");
 			UserDaoImpl userDaoImpl= new UserDaoImpl();
 			flag = userDaoImpl.getUser(uid);
+			if(!flag){
+				String name = request.getParameter("name");
+				String password = request.getParameter("password");
+				uid = userDaoImpl.getUser(name, password);
+				if(uid != null){
+					flag = true;
+				}
+			}
 			if(flag){
 				String nickName = userDaoImpl.getNickName(uid);
 				result = "{'cmd':'"+0+"','code':'"+0+"','uid':'"+uid+"','login':'"+login+"','nickname':'"+nickName+"'}";
@@ -382,7 +393,7 @@ public class DealCMD extends HttpServlet {
 				for(int i=0;i<recommends.size();i++){
 					Recommend recommend = recommends.get(i);
 					
-					sb.append("{'type':'"+recommend.getType()+"','tid':'"+recommend.getTid());
+					sb.append("{'type':'"+recommend.getType()+"','tid':'"+recommend.getTid() + "'},");
 				}
 				sb.delete(sb.length()-1, sb.length());
 				sb.append("]");
@@ -390,6 +401,49 @@ public class DealCMD extends HttpServlet {
 			}else{
 				result = "{'cmd':'"+901+"','code':'"+1+"'}";
 			}
+			break;
+		case 1001://获取用户的收藏列表
+			uid = request.getParameter("uid");
+			FavorDao favorDao = new FavorDaoImpl();
+			List<Favor> favors = favorDao.getFavorList(uid);
+			if(favors != null && favors.size() > 0){
+				StringBuffer sb = new StringBuffer(",'list':[");
+				for(int i=0;i<favors.size();i++){
+					Favor favor = favors.get(i);
+					
+					sb.append("{'type':'"+favor.getType()+"','tid':'"+favor.getTid() + "'},");
+				}
+				sb.delete(sb.length()-1, sb.length());
+				sb.append("]");
+				result = "{'cmd':'"+1001+"','code':'"+0+"'"+sb.toString()+"}";
+			}else{
+				result = "{'cmd':'"+1001+"','code':'"+1+"'}";
+			}
+			break;
+		case 1002://添加收藏
+			uid = request.getParameter("uid");
+			type = request.getParameter("type");
+			tid = request.getParameter("tid");
+			favorDao = new FavorDaoImpl();
+			boolean rs = favorDao.addFavor(uid, Integer.valueOf(type), Integer.valueOf(tid));
+			if(rs){
+				result = "{'cmd':'"+1002+"','code':'"+0+"'}";
+			}else{
+				result = "{'cmd':'"+1002+"','code':'"+1+"'}";
+			}
+			break;
+		case 1003://移除收藏
+			uid = request.getParameter("uid");
+			type = request.getParameter("type");
+			tid = request.getParameter("tid");
+			favorDao = new FavorDaoImpl();
+			rs = favorDao.removeFavor(uid, Integer.valueOf(type), Integer.valueOf(tid));
+			if(rs){
+				result = "{'cmd':'"+1003+"','code':'"+0+"'}";
+			}else{
+				result = "{'cmd':'"+1003+"','code':'"+1+"'}";
+			}
+			break;
 		}
 		System.out.println(result);
 		if(result != null){
