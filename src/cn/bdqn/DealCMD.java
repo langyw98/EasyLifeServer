@@ -1,9 +1,11 @@
 package cn.bdqn;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,6 +13,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.tomcat.util.http.fileupload.FileItem;
+import org.apache.tomcat.util.http.fileupload.FileItemFactory;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletRequestContext;
 
 import cn.bdqn.dao.FavorDao;
 import cn.bdqn.dao.RecommendDao;
@@ -139,6 +148,40 @@ public class DealCMD extends HttpServlet {
 			String projectPath = request.getSession().getServletContext().getRealPath("") ;
 			try{
 				data = FileUtil.readFile(projectPath, imagename);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			break;
+		case 5://上传头像图片
+			boolean isMultipart = ServletFileUpload.isMultipartContent(request); 
+			uid = request.getParameter("uid");
+	        
+			if (isMultipart) {  
+	            FileItemFactory factory = new DiskFileItemFactory();  
+	            ServletFileUpload upload = new ServletFileUpload(factory);  
+	            try {  
+	                List items = upload.parseRequest(new ServletRequestContext(request));  
+	                Iterator iter = items.iterator();  
+	                while (iter.hasNext()) {  
+	                    FileItem item = (FileItem) iter.next();  
+	                    //上传文件信息处理  
+	                    data = item.get();  
+	                    projectPath = request.getSession().getServletContext().getRealPath("") ;
+	                    String filePath = projectPath + "/uploadimages/" + uid + ".png";  
+	                    FileOutputStream fos = new FileOutputStream(filePath);  
+	                    fos.write(data);  
+	                    fos.close(); 
+	                }  
+	            } catch (FileUploadException e) {  
+	                e.printStackTrace();  
+	            }  
+	        } 
+			break;
+		case 6://获取头像图片
+			uid = request.getParameter("uid");
+			projectPath = request.getSession().getServletContext().getRealPath("") ;
+			try{
+				data = FileUtil.readHeadIcon(projectPath, uid);
 			}catch(Exception e){
 				e.printStackTrace();
 			}

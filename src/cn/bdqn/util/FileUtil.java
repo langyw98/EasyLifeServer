@@ -19,4 +19,21 @@ public class FileUtil {
 		inStream.close();
 		return outStream.toByteArray();
 	}
+	
+	public static byte[] readHeadIcon(String path, String name) throws Exception{
+		File file = new File(path + "/uploadimages/"+name+".png");
+		if(!file.exists()){
+			return null;
+		}
+		FileInputStream inStream = new FileInputStream(file);
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+		int len =0;
+		while((len = inStream.read(buffer))!=-1){
+			outStream.write(buffer, 0, len);
+		}
+		outStream.close();
+		inStream.close();
+		return outStream.toByteArray();
+	}
 }
