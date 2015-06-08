@@ -14,4 +14,8 @@ public interface UserDao {
 	public String getNickName(String uid);
 	
 	public boolean updateNickName(String uid, String nickName);
+	
+	public boolean updatePwd(String uid, String oldpwd, String newpwd);
+	
+	public boolean updateNickname(String uid, String nickname);
 }

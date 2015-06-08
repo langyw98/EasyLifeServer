@@ -115,4 +115,53 @@ public class UserDaoImpl implements UserDao {
 		return false;
 	}
 
+	@Override
+	public boolean updatePwd(String uid, String oldpwd, String newpwd) {
+		// TODO Auto-generated method stub
+		String pwd = null;
+		try{
+			conn = DBUtil.getConnection();
+			st = conn.createStatement();
+			rs = st.executeQuery("select password from user where uid='"+uid+"'");
+			if(rs.first()){
+				pwd = rs.getString(1);
+			}
+			if(pwd != null && pwd.equals(oldpwd)){
+				int rownum = st.executeUpdate("UPDATE user SET password = '" + newpwd + "' WHERE uid = '" + uid + "'");
+				if(rownum > 0){
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}catch(SQLException e){
+			
+		}finally{
+			DBUtil.freeDB(rs, st, conn);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean updateNickname(String uid, String nickname) {
+		// TODO Auto-generated method stub
+		try {
+			conn = DBUtil.getConnection();
+			st = conn.createStatement();
+			int rownum = st.executeUpdate("UPDATE user SET nickname = '"
+					+ nickname + "' WHERE uid = '" + uid + "'");
+			if (rownum > 0) {
+				return true;
+			} else {
+				return false;
+			}
+
+		} catch (SQLException e) {
+
+		} finally {
+			DBUtil.freeDB(rs, st, conn);
+		}
+		return false;
+	}
+
 }

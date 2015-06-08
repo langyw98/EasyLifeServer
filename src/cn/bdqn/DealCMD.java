@@ -186,6 +186,29 @@ public class DealCMD extends HttpServlet {
 				e.printStackTrace();
 			}
 			break;
+		case 7://修改密码
+			uid = request.getParameter("uid");
+			String oldpwd = request.getParameter("oldpwd");
+			String newpwd = request.getParameter("newpwd");
+			userDaoImpl = new UserDaoImpl();
+			boolean isSuccess = userDaoImpl.updatePwd(uid, oldpwd, newpwd);
+			if(isSuccess){
+				result = "{'cmd':'"+7+"','code':'"+0+"'}";
+			}else{
+				result = "{'cmd':'"+7+"','code':'"+1+"'}";
+			}
+			break;
+		case 8://修改昵称
+			uid = request.getParameter("uid");
+			String nickname = request.getParameter("nickname");
+			userDaoImpl = new UserDaoImpl();
+			isSuccess = userDaoImpl.updateNickname(uid, nickname);
+			if(isSuccess){
+				result = "{'cmd':'"+8+"','code':'"+0+"'}";
+			}else{
+				result = "{'cmd':'"+8+"','code':'"+1+"'}";
+			}
+			break;
 		case 101://获取电影列表
 			int startPos = Integer.parseInt(request.getParameter("startPos"));
 			MovieDaoImpl movieImpl = new MovieDaoImpl();
